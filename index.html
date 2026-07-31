@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>LOVE.exe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #FFF7E1;
+            --text-color: #1A1A1A;
+            --primary-pink: #FF7BA7;
+            --dark-pink: #FF4D6D;
+            --border-color: #1A1A1A;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Press Start 2P', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: auto;
+            font-size: 10px;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        .window {
+            background-color: var(--bg-color);
+            border: 3px solid var(--border-color);
+            box-shadow: 6px 6px 0px var(--border-color);
+            width: 90%;
+            max-width: 380px;
+            display: flex;
+            flex-direction: column;
+            margin: 20px;
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .title-bar {
+            background-color: var(--primary-pink);
+            border-bottom: 3px solid var(--border-color);
+            padding: 8px 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+        }
+
+        .title-bar-controls span {
+            border: 2px solid var(--border-color);
+            background-color: var(--bg-color);
+            padding: 0 4px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .window-body {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .pixel-btn {
+            background-color: var(--bg-color);
+            border: 3px solid var(--border-color);
+            box-shadow: 3px 3px 0px var(--border-color);
+            padding: 12px 16px;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 9px;
+            cursor: pointer;
+            color: var(--text-color);
+            display: inline-flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            -webkit-appearance: none;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+            width: 100%;
+            max-width: 220px;
+        }
+
+        .pixel-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0px var(--border-color);
+            background-color: var(--primary-pink);
+        }
+
+        .screen {
+            display: none;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .pixel-img {
+            image-rendering: pixelated;
+        }
+
+        .heart-icon {
+            width: 32px;
+            height: 32px;
+            animation: bounce 0.6s infinite alternate;
+            margin-bottom: 15px;
+        }
+
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-8px); }
+        }
+
+        .wobble-img {
+            animation: wobble 1.5s infinite ease-in-out;
+        }
+
+        @keyframes wobble {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-3deg); }
+            75% { transform: rotate(3deg); }
+        }
+
+        .dialogue-box {
+            border: 2px dashed var(--border-color);
+            padding: 15px;
+            margin: 15px 0;
+            background: #fff;
+            text-align: left;
+            line-height: 1.6;
+        }
+
+        .icon-small {
+            width: 18px;
+            height: 18px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="window">
+        <div class="title-bar">
+            <span id="window-title">LOVE.exe</span>
+            <div class="title-bar-controls">
+                <span>_</span> <span>X</span>
+            </div>
+        </div>
+
+        <div class="window-body">
+            
+            <!-- SCREEN 1: HOME -->
+            <div id="screen-home" class="screen active">
+                <img src="assets/sprites/heart.png" class="pixel-img heart-icon" alt="Heart" onerror="this.style.display='none'">
+                <h3>Happy Girlfriend Day</h3>
+                <p style="margin: 15px 0; color: #555;">Satnoor</p>
+                <button class="pixel-btn" onclick="goToScreen('screen-hello')">CLICK TO LAUNCH</button>
+            </div>
+
+            <!-- SCREEN 2: HELLO DIALOGUE -->
+            <div id="screen-hello" class="screen">
+                <div style="margin-bottom: 10px;">
+                    <img src="assets/sprites/hamster_idle.png" class="pixel-img wobble-img" width="48" height="48" alt="Hamster" onerror="this.style.display='none'">
+                </div>
+                <div class="dialogue-box">
+                    <p>Hey Bauni... Are U a Bauni??</p>
+                </div>
+                <div style="display: flex; justify-content: space-around; align-items: center; margin-top: 20px; position: relative; height: 25px;">
+                    <button class="pixel-btn" onclick="goToScreen('screen-amazing')">YES</button>
+                    <button class="pixel-btn" id="btn-no" style="position: absolute; right: 0; transition: transform 02s ease; width: auto;" onclick="dodgeNo(event)">NO</button>
+                </div>
+            </div>
+
+            <!-- SCREEN 3: AMAZING QUESTION PAGE -->
+            <div id="screen-amazing" class="screen">
+                <div style="margin-bottom: 10px;">
+                    <img src="assets/sprites/hamster_blink.png" class="pixel-img wobble-img" width="48" height="48" alt="Hamster" onerror="this.style.display='none'">
+                </div>
+                <div class="dialogue-box">
+                    <p>How Short are you? 🥰</p>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px; align-items: center;">
+                    <button class="pixel-btn" onclick="goToScreen('screen-inventory')">Infinitely Short ✨</button>
+                    <button class="pixel-btn" onclick="goToScreen('screen-inventory')">The shortest person ever 💖</button>
+                </div>
+            </div>
+
+            <!-- SCREEN 4: INVENTORY HUB -->
+            <div id="screen-inventory" class="screen">
+                <p><strong>Inventory</strong></p>
+                <p style="font-size: 8px; color: #666; margin-bottom: 15px;">Click items to open</p>
+                <div style="display: flex; flex-direction: column; gap: 10px; align-items: center;">
+                    <button class="pixel-btn" onclick="goToScreen('screen-flowers')">
+                        <img src="assets/sprites/flower.png" class="pixel-img icon-small" alt="Flower" onerror="this.style.display='none'">
+                        <span>height</span>
+                    </button>
+                    <button class="pixel-btn" onclick="goToScreen('screen-hugs')">
+                        <img src="assets/sprites/heart_particle.png" class="pixel-img icon-small" alt="Hugs" onerror="this.style.display='none'">
+                        <span>Hugs</span>
+                    </button>
+                    <button class="pixel-btn" onclick="goToScreen('screen-letter')">
+                        <img src="assets/sprites/letter.png" class="pixel-img icon-small" alt="Letter" onerror="this.style.display='none'">
+                        <span>Letter</span>
+                    </button>
+                </div>
+                <br>
+                <button class="pixel-btn" style="margin-top: 5px;" onclick="goToScreen('screen-end')">
+                    <span>FINISH</span>
+                </button>
+            </div>
+
+            <!-- SCREEN 5A: FLOWERS POPUP -->
+            <div id="screen-flowers" class="screen">
+                <div style="margin-bottom: 15px;">
+                    <img src="assets/sprites/flower.png" class="pixel-img heart-icon" width="48" height="48" alt="Flower" onerror="this.style.display='none'">
+                </div>
+                <div class="dialogue-box" style="text-align: center;">
+                    <p><strong>No Height Unlocked 🌸</strong></p>
+                </div>
+                <button class="pixel-btn" onclick="goToScreen('screen-inventory')">BACK</button>
+            </div>
+
+            <!-- SCREEN 5B: HUGS POPUP -->
+            <div id="screen-hugs" class="screen">
+                <div style="margin-bottom: 15px;">
+                    <img src="assets/sprites/hamster_blink.png" class="pixel-img wobble-img" width="48" height="48" alt="Hugs" onerror="this.style.display='none'">
+                </div>
+                <div class="dialogue-box" style="text-align: center;">
+                    <p><strong>Sending tight hugs! 🤗💖</strong></p>
+                </div>
+                <button class="pixel-btn" onclick="goToScreen('screen-inventory')">BACK</button>
+            </div>
+
+            <!-- SCREEN 5C: LETTER -->
+            <div id="screen-letter" class="screen">
+                <div class="dialogue-box" style="font-size: 8px;">
+                    <p><strong>To merii chatpatii Baddiiee,</strong><br><br>
+                    I just wanted to Tell You That You are SHORT. <br><br>
+                    Hor nhii ptaaa kii likhaa.<br>I love you MOMMY 😘.</p>
+                </div>
+                <button class="pixel-btn" onclick="goToScreen('screen-inventory')">BACK</button>
+            </div>
+
+            <!-- SCREEN 6: END -->
+            <div id="screen-end" class="screen">
+                <img src="assets/sprites/star.png" class="pixel-img heart-icon" width="32" height="32" alt="Star" onerror="this.style.display='none'">
+                <h3>Congratulations!</h3>
+                <p style="margin: 15px 0;">You completed Love.exe</p>
+                <p style="color: var(--dark-pink); display: flex; align-items: center; justify-content: center; gap: 5px;">
+                    <span>Reward:</span>
+                    <img src="assets/sprites/heart_particle.png" class="pixel-img" style="width: 14px; height: 14px;" alt="Heart" onerror="this.style.display='none'">
+                    <span>Love Points</span>
+                </p>
+                <button class="pixel-btn" onclick="goToScreen('screen-home')">REPLAY</button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function goToScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            const target = document.getElementById(screenId);
+            if (target) {
+                target.classList.add('active');
+            }
+            
+            const titles = {
+                'screen-home': 'LOVE.exe',
+                'screen-hello': 'Hello.exe',
+                'screen-amazing': 'Quiz.exe',
+                'screen-inventory': 'Inventory.exe',
+                'screen-flowers': 'flowers.exe',
+                'screen-hugs': 'hugs.exe',
+                'screen-letter': 'Inbox.exe',
+                'screen-end': 'Reward.exe'
+            };
+            const titleEl = document.getElementById('window-title');
+            if (titleEl) {
+                titleEl.innerText = titles[screenId] || 'LOVE.exe';
+            }
+        }
+
+        function dodgeNo(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-no');
+            if (btn) {
+                const x = (Math.random() - 0.5) * 100;
+                const y = (Math.random() - 0.5) * 40;
+                btn.style.transform = `translate(${x}px, ${y}px)`;
+            }
+        }
+    </script>
+</body>
+</html>
